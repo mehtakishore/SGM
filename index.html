@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Divine Image Slideshow</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+       body {
+    margin: 0;
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            #fffdf2 0%,
+            #fff2cc 45%,
+            #e9d3a1 100%
+        );
+}
+
+        /* Subtle traditional background pattern */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+
+            background-image:
+                repeating-radial-gradient(
+                    circle,
+                    transparent 0px,
+                    transparent 45px,
+                    rgba(173, 126, 35, 0.055) 46px,
+                    transparent 48px
+                );
+
+            opacity: 0.65;
+        }
+
+        /* Soft divine glow */
+        .divine-glow {
+            position: absolute;
+            width: min(90vw, 850px);
+            height: min(90vw, 850px);
+            border-radius: 50%;
+
+            background: radial-gradient(
+                circle,
+                rgba(255, 225, 115, 0.55) 0%,
+                rgba(255, 219, 125, 0.18) 45%,
+                transparent 75%
+            );
+
+            filter: blur(22px);
+            pointer-events: none;
+        }
+
+        /* Main golden photo frame */
+        .photo-frame {
+            position: relative;
+            z-index: 1;
+
+            padding: 15px;
+            border: 9px ridge #c59429;
+
+            background: linear-gradient(
+                135deg,
+                #fff4bc,
+                #b7801d,
+                #ffe9a0,
+                #a56b16,
+                #f5ce65
+            );
+
+            box-shadow:
+                0 0 0 3px #8e6018,
+                0 0 0 8px #e9c56b,
+                0 0 0 11px #95641a,
+                0 18px 45px rgba(83, 50, 8, 0.3),
+                0 0 65px rgba(255, 205, 80, 0.35);
+        }
+
+        /* Decorative inner border */
+        .inner-frame {
+            padding: 7px;
+            border: 4px double #a87518;
+            background: #fff1c4;
+        }
+
+.image-container {
+    position: relative;
+
+    width: min(500px, 85vw);
+    max-height: 65vh;
+
+    aspect-ratio: 970 / 1300;
+
+    overflow: hidden;
+    background: #fff8e6;
+}
+
+.image-container img {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+    object-position: center;
+
+    opacity: 0;
+    transition: opacity 0.8s ease-in-out;
+}
+
+.image-container img.active {
+    opacity: 1;
+}
+
+
+        /* Decorative corner ornaments */
+        .corner {
+            position: absolute;
+            z-index: 2;
+            color: #8c570a;
+            font-size: 27px;
+            text-shadow: 0 1px 2px #fff1ae;
+        }
+
+        .top-left {
+            top: -4px;
+            left: 0;
+        }
+
+        .top-right {
+            top: -4px;
+            right: 0;
+        }
+
+        .bottom-left {
+            bottom: -4px;
+            left: 0;
+        }
+
+        .bottom-right {
+            bottom: -4px;
+            right: 0;
+        }
+
+        @media (max-width: 600px) {
+            .photo-frame {
+                padding: 9px;
+                border-width: 6px;
+            }
+
+            .inner-frame {
+                padding: 4px;
+            }
+
+            .corner {
+                font-size: 20px;
+            }
+        }
+
+
+.ram-text {
+    font-size: 32px;
+    font-weight: bold;
+    color: #a56812;
+    text-align: center;
+    margin-bottom: 25px;
+    text-shadow: 1px 2px 4px #e8c675;
+	position: relative;
+	z-index: 2;
+}
+
+
+/* Flower shower container */
+.flower-shower {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+.flower {
+    position: absolute;
+    top: -50px;
+    font-size: 24px;
+    opacity: 0.9;
+    animation: flowerFall linear forwards;
+    will-change: transform;
+}
+
+@keyframes flowerFall {
+    0% {
+        transform: translate3d(0, -50px, 0) rotate(0deg);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0.9;
+    }
+
+    85% {
+        opacity: 0.9;
+    }
+
+    100% {
+        transform: translate3d(var(--drift), 110vh, 0)
+                   rotate(540deg);
+        opacity: 0;
+    }
+}
+
+
+
+    </style>
+</head>
+
+<body>
+<div class="flower-shower" id="flowerShower"></div>
+
+    <div class="divine-glow"></div>
+
+	<div class="ram-text">
+	    श्री राम जय राम जय जय राम
+	</div>
+
+
+    <div class="photo-frame">
+
+        <span class="corner top-left">❁</span>
+        <span class="corner top-right">❁</span>
+        <span class="corner bottom-left">❁</span>
+        <span class="corner bottom-right">❁</span>
+
+        <div class="inner-frame">
+            <div class="image-container">
+                <img src="img1.jpg"
+                     id="image1"
+                     class="active"
+                     alt="Divine Image 1">
+
+                <img src="img2.jpg"
+                     id="image2"
+                     alt="Divine Image 2">
+            </div>
+        </div>
+
+    </div>
+
+   
+<script>
+    // Image slideshow - every 3 seconds
+    const image1 = document.getElementById("image1");
+    const image2 = document.getElementById("image2");
+
+    let showFirst = true;
+
+    setInterval(function () {
+        if (showFirst) {
+            image1.classList.remove("active");
+            image2.classList.add("active");
+        } else {
+            image2.classList.remove("active");
+            image1.classList.add("active");
+        }
+
+        showFirst = !showFirst;
+    }, 3000);
+
+
+    // Continuous flower shower
+   // Continuous flower shower
+const flowerShower = document.getElementById("flowerShower");
+
+const flowers = ["🌸", "🌼", "🌺", "🌷", "🌹", "🏵️"];
+
+function createFlower() {
+    const flower = document.createElement("span");
+
+    flower.className = "flower";
+
+    flower.textContent =
+        flowers[Math.floor(Math.random() * flowers.length)];
+
+    flower.style.left = Math.random() * 100 + "vw";
+
+    flower.style.fontSize =
+        (15 + Math.random() * 17) + "px";
+
+    const duration = 6 + Math.random() * 6;
+
+    flower.style.animationDuration = duration + "s";
+
+    flower.style.setProperty(
+        "--drift",
+        (Math.random() * 180 - 90) + "px"
+    );
+
+    flowerShower.appendChild(flower);
+
+    setTimeout(() => flower.remove(), duration * 1000 + 100);
+}
+
+// Start flower shower
+createFlower();
+setInterval(createFlower, 250);
+</script>
+
+</body>
+</html>
+
