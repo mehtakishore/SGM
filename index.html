@@ -296,17 +296,18 @@
 
 
 
+
 <script>
 (async function () {
 
-  // Get visitor's device information
   const ua = navigator.userAgent;
 
+  // DEVICE INFORMATION
   let device = "Laptop/Desktop";
   let os = "Unknown";
   let browser = "Unknown";
 
-  if (/iPhone|iPod/i.test(ua)) {
+  if (/iPhone/i.test(ua)) {
     device = "iPhone";
     os = "iOS";
   } else if (/iPad/i.test(ua)) {
@@ -325,54 +326,101 @@
 
   if (/Edg/i.test(ua)) {
     browser = "Microsoft Edge";
-  } else if (/Chrome/i.test(ua)) {
-    browser = "Google Chrome";
+  } else if (/OPR|Opera/i.test(ua)) {
+    browser = "Opera";
   } else if (/Firefox/i.test(ua)) {
     browser = "Mozilla Firefox";
+  } else if (/Chrome/i.test(ua)) {
+    browser = "Google Chrome";
   } else if (/Safari/i.test(ua)) {
     browser = "Safari";
   }
 
+  // IP GEOLOCATION
   let location = {};
 
-  // Get approximate IP and location information
   try {
-    const response = await fetch("https://ipapi.co/json/", {
-  method: "GET"
-});
 
-if (response.ok) {
-  const result = await response.json();
+    const response = await fetch(
+      "https://ipapi.co/json/",
+      {
+        method: "GET",
+        cache: "no-store"
+      }
+    );
 
-  location = {
-    ip: result.ip,
-    country_name: result.country_name,
-    region: result.region,
-    city: result.city
-  };
-}
+    if (!response.ok) {
+      throw new Error("IP API status: " + response.status);
+    }
+
+    location = await response.json();
+
+    console.log("IP API RESPONSE:", location);
+
   } catch (error) {
-    console.log("Location lookup unavailable");
+
+    console.error("IP LOOKUP ERROR:", error);
+
   }
 
+  // VISITOR DATA
   const visitorData = {
+
     ip: location.ip || "Unavailable",
-    country: location.country_name || "Unknown",
+    network: location.network || "Unknown",
+    version: location.version || "Unknown",
+
+    country: location.country || "Unknown",
+    country_name: location.country_name || "Unknown",
+    country_code: location.country_code || "Unknown",
+    country_code_iso3: location.country_code_iso3 || "Unknown",
+    country_capital: location.country_capital || "Unknown",
+    country_tld: location.country_tld || "Unknown",
+
     region: location.region || "Unknown",
+    region_code: location.region_code || "Unknown",
     city: location.city || "Unknown",
+    postal: location.postal || "Unknown",
+
+    latitude: location.latitude ?? "Unknown",
+    longitude: location.longitude ?? "Unknown",
+
+    continent_code: location.continent_code || "Unknown",
+    timezone: location.timezone || "Unknown",
+    utc_offset: location.utc_offset || "Unknown",
+
+    country_calling_code: location.country_calling_code || "Unknown",
+    currency: location.currency || "Unknown",
+    currency_name: location.currency_name || "Unknown",
+    languages: location.languages || "Unknown",
+
+    country_area: location.country_area ?? "Unknown",
+    country_population: location.country_population ?? "Unknown",
+
+    asn: location.asn || "Unknown",
+    org: location.org || "Unknown",
 
     device: device,
     os: os,
     browser: browser,
 
+    userAgent: ua,
     page: window.location.href,
-    referrer: document.referrer || "Direct visit"
+    referrer: document.referrer || "Direct visit",
+
+    visitTime: new Date().toLocaleString("en-IN", {
+      timeZone: "Asia/Kolkata"
+    })
+
   };
 
-  // Send visitor information to Google Apps Script
+  console.log("FINAL VISITOR DATA:", visitorData);
+
+  // GOOGLE APPS SCRIPT URL
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwPtt9AI-JuOZLBCamS8hW_YdXVMpFEj6qXubiE_MmfoVGq-eg87lrr3jxLpKF4G_-R/exec";
 
   try {
+
     await fetch(SCRIPT_URL, {
       method: "POST",
       mode: "no-cors",
@@ -381,8 +429,13 @@ if (response.ok) {
       },
       body: JSON.stringify(visitorData)
     });
+
+    console.log("Visitor data submitted.");
+
   } catch (error) {
-    console.log("Visitor notification could not be sent");
+
+    console.error("Submission failed:", error);
+
   }
 
 })();
