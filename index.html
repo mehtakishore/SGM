@@ -2,10 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>Divine Image Slideshow</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>जय श्री राम</title>
 
     <style>
         * {
@@ -102,34 +100,29 @@
             background: #fff1c4;
         }
 
+
 .image-container {
     position: relative;
-
-    width: min(500px, 85vw);
-    max-height: 65vh;
-
-    aspect-ratio: 970 / 1300;
-
+    display: inline-block;
+    line-height: 0;
     overflow: hidden;
-    background: #fff8e6;
+    background: transparent;
 }
 
 .image-container img {
-    position: absolute;
-    inset: 0;
+    display: none;
 
-    width: 100%;
-    height: 100%;
+    width: auto;
+    height: auto;
+
+    max-width: 85vw;
+    max-height: 65vh;
 
     object-fit: contain;
-    object-position: center;
-
-    opacity: 0;
-    transition: opacity 0.8s ease-in-out;
 }
 
 .image-container img.active {
-    opacity: 1;
+    display: block;
 }
 
 
@@ -238,6 +231,9 @@
 <div class="flower-shower" id="flowerShower"></div>
 
     <div class="divine-glow"></div>
+	<div class="ram-text">
+	    ॐ
+	</div>
 
 	<div class="ram-text">
 	    श्री राम जय राम जय जय राम
@@ -253,12 +249,12 @@
 
         <div class="inner-frame">
             <div class="image-container">
-                <img src="Img1.jpg"
+                <img src="img1.jpg"
                      id="image1"
                      class="active"
                      alt="Divine Image 1">
 
-                <img src="Img2.jpg"
+                <img src="img2.jpg"
                      id="image2"
                      alt="Divine Image 2">
             </div>
