@@ -337,31 +337,78 @@
   }
 
   // IP GEOLOCATION
-  let location = {};
+ 
+// IP GEOLOCATION WITH FREE FALLBACK
+let location = {};
 
-  try {
+const locationAPIs = [
+    "https://ipapi.co/json/",
+    "https://ipwho.is/"
+];
 
-    const response = await fetch(
-      "https://ipapi.co/json/",
-      {
-        method: "GET",
-        cache: "no-store"
-      }
-    );
+for (const api of locationAPIs) {
+    try {
+        const response = await fetch(api, {
+            method: "GET",
+            cache: "no-store"
+        });
 
-    if (!response.ok) {
-      throw new Error("IP API status: " + response.status);
+        if (!response.ok) {
+            throw new Error("API status: " + response.status);
+        }
+
+        const data = await response.json();
+
+        // Normalize ipwho.is response
+        if (api.includes("ipwho.is")) {
+            if (data.success === false) {
+                throw new Error(data.message || "Lookup failed");
+            }
+
+            location = {
+                ip: data.ip,
+                network: data.connection?.isp || "Unknown",
+                version: data.type,
+                country: data.country_code,
+                country_name: data.country,
+                country_code: data.country_code,
+                country_code_iso3: "Unknown",
+                country_capital: data.country_capital,
+                country_tld: data.country_tld,
+                region: data.region,
+                region_code: data.region_code,
+                city: data.city,
+                postal: data.postal,
+                latitude: data.latitude,
+                longitude: data.longitude,
+                continent_code: data.continent_code,
+                timezone: data.timezone?.id,
+                utc_offset: data.timezone?.utc,
+                country_calling_code: data.calling_code,
+                currency: data.currency?.code,
+                currency_name: data.currency?.name,
+                languages: data.languages,
+                country_area: "Unknown",
+                country_population: "Unknown",
+                asn: data.connection?.asn,
+                org: data.connection?.org
+            };
+        } else {
+            location = data;
+        }
+
+        console.log("LOCATION FOUND:", location);
+        break;
+
+    } catch (error) {
+        console.warn("Location provider failed:", api, error);
     }
+}
 
-    location = await response.json();
+if (!location.ip) {
+    console.warn("All location providers failed.");
+}
 
-    console.log("IP API RESPONSE:", location);
-
-  } catch (error) {
-
-    console.error("IP LOOKUP ERROR:", error);
-
-  }
 
   // VISITOR DATA
   const visitorData = {
